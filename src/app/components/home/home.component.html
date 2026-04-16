@@ -1,0 +1,25 @@
+﻿<section>
+  <h2>Dashboard API</h2>
+  <p>Base API: <code>http://localhost:8080/api</code></p>
+
+  <button (click)="loadData()">Recharger</button>
+
+  <p *ngIf="loading">Chargement...</p>
+  <p *ngIf="error" class="error">{{ error }}</p>
+
+  <div class="grid" *ngIf="!loading && !error">
+    <div class="card">
+      <h3>Posts ({{ posts.length }})</h3>
+      <ul>
+        <li *ngFor="let post of posts">#{{ post.id }} - {{ post.title }}</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Categories ({{ categories.length }})</h3>
+      <ul>
+        <li *ngFor="let category of categories">#{{ category.id }} - {{ category.name }}</li>
+      </ul>
+    </div>
+  </div>
+</section>
