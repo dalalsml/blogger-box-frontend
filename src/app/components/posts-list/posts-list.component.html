@@ -1,0 +1,15 @@
+<section class="posts-list">
+  <div class="toolbar">
+    <h2>Posts</h2>
+    <button type="button" (click)="loadPosts()">Recharger</button>
+  </div>
+
+  <p *ngIf="loading">Chargement...</p>
+  <p *ngIf="error" class="error">{{ error }}</p>
+
+  <div *ngIf="!loading && !error" class="list">
+    <app-post-list-item *ngFor="let post of posts" [post]="post"></app-post-list-item>
+  </div>
+
+  <p *ngIf="!loading && !error && posts.length === 0" class="empty">Aucun post disponible.</p>
+</section>

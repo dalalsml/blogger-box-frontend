@@ -1,19 +1,9 @@
-﻿:host {
+:host {
   display: block;
-  font-family: Arial, sans-serif;
 }
 
-.topbar {
-  background: #1f2937;
-  color: #fff;
-  padding: 12px 20px;
-}
-
-.topbar h1 {
-  margin: 0;
-  font-size: 20px;
-}
-
-.page {
-  padding: 20px;
+.container {
+  padding: 24px;
+  max-width: 980px;
+  margin: 0 auto;
 }

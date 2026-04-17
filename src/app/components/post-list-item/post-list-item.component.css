@@ -1,0 +1,20 @@
+.post-item {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 14px;
+  background: #fff;
+}
+
+.post-item h3 {
+  margin: 0 0 8px;
+}
+
+.post-item p {
+  margin: 0 0 10px;
+  color: #111827;
+}
+
+.meta {
+  color: #6b7280;
+  font-size: 13px;
+}
