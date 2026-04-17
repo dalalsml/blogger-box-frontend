@@ -4,14 +4,11 @@ export interface Category {
   description?: string;
 }
 
-export interface CategoryCreateInput {
-  name: string;
-  description?: string;
-}
-
-export interface CategoryUpdateInput {
-  name: string;
-  description?: string;
-}
+export type CategoryCreateInput = Omit<Category, 'id'>;
+export type CategoryUpdateInput = Omit<Category, 'id'>;
 
 export type CategoryPatchInput = Partial<CategoryUpdateInput>;
+
+export type CategoryCreateInputWithIsActive = CategoryCreateInput & {
+  isActive: boolean;
+};

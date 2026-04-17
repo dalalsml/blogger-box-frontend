@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { Observable, catchError, throwError } from 'rxjs';
 import { environment } from '../../environments/environment';
 import {
@@ -28,6 +28,13 @@ export class CategoryService {
     return this.http
       .get<Category>(`${this.baseUrl}/${id}`)
       .pipe(catchError((error) => this.handleError(error, 'get category by id')));
+  }
+
+  searchByName(name: string): Observable<Category[]> {
+    const params = new HttpParams().set('name', name);
+    return this.http
+      .get<Category[]>(this.baseUrl, { params })
+      .pipe(catchError((error) => this.handleError(error, 'search categories by name')));
   }
 
   getPosts(id: string): Observable<Post[]> {

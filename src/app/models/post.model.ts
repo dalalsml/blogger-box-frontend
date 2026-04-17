@@ -9,16 +9,11 @@ export interface Post {
   category?: Category;
 }
 
-export interface PostCreateInput {
-  title: string;
-  content: string;
-  categoryId?: string;
-}
-
-export interface PostUpdateInput {
-  title: string;
-  content: string;
-  categoryId?: string;
-}
+export type PostCreateInput = Omit<Post, 'id' | 'createdDate' | 'category'>;
+export type PostUpdateInput = Omit<Post, 'id' | 'createdDate' | 'category'>;
 
 export type PostPatchInput = Partial<PostUpdateInput>;
+
+export type PostWithUiState = Post & {
+  isExpanded: boolean;
+};
