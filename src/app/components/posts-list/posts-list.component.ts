@@ -38,8 +38,4 @@ export class PostsListComponent {
   loadPosts(): void {
     this.refresh$.next();
   }
-
-  trackByPostId(_index: number, post: Post): string {
-    return post.id;
-  }
 }

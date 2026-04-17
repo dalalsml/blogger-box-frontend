@@ -1,9 +1,16 @@
-<article class="post-item">
-  <h3>{{ post.title }}</h3>
-  <p>{{ post.content }}</p>
-  <div class="meta">
-    <span class="badge text-bg-light me-2" *ngIf="post.category?.name">{{ post.category?.name }}</span>
-    <span *ngIf="post.createdDate">{{ post.createdDate | date: 'dd/MM/yyyy HH:mm' }}</span>
-    <span *ngIf="!post.createdDate">Post #{{ post.id }}</span>
-  </div>
-</article>
+@if (post) {
+  <article class="post-item pt-4 p-2">
+    <h3>{{ post.title }}</h3>
+    <p>{{ post.content }}</p>
+    <div class="meta">
+      <span
+        class="badge rounded-pill"
+        [ngClass]="post.category?.name ? 'text-bg-light' : 'text-bg-secondary'"
+      >
+        {{ post.category?.name || 'Sans categorie' }}
+      </span>
+      <span *ngIf="post.createdDate">{{ post.createdDate | date: 'medium' }}</span>
+      <span *ngIf="!post.createdDate">Post #{{ post.id }}</span>
+    </div>
+  </article>
+}
