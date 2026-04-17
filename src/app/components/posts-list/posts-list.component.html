@@ -1,15 +1,20 @@
 <section class="posts-list">
   <div class="toolbar">
     <h2>Posts</h2>
-    <button type="button" (click)="loadPosts()">Recharger</button>
+    <button type="button" class="btn btn-primary" (click)="loadPosts()">Recharger</button>
   </div>
 
   <p *ngIf="loading">Chargement...</p>
   <p *ngIf="error" class="error">{{ error }}</p>
 
   <div *ngIf="!loading && !error" class="list">
-    <app-post-list-item *ngFor="let post of posts" [post]="post"></app-post-list-item>
-  </div>
+    <ng-container *ngIf="posts$ | async as posts">
+      <app-post-list-item
+        *ngFor="let post of posts; trackBy: trackByPostId"
+        [post]="post"
+      ></app-post-list-item>
 
-  <p *ngIf="!loading && !error && posts.length === 0" class="empty">Aucun post disponible.</p>
+      <p *ngIf="posts.length === 0" class="empty">Aucun post disponible.</p>
+    </ng-container>
+  </div>
 </section>

@@ -1,5 +1,9 @@
 <article class="post-item">
   <h3>{{ post.title }}</h3>
   <p>{{ post.content }}</p>
-  <div class="meta">Post #{{ post.id }}</div>
+  <div class="meta">
+    <span class="badge text-bg-light me-2" *ngIf="post.category?.name">{{ post.category?.name }}</span>
+    <span *ngIf="post.createdDate">{{ post.createdDate | date: 'dd/MM/yyyy HH:mm' }}</span>
+    <span *ngIf="!post.createdDate">Post #{{ post.id }}</span>
+  </div>
 </article>
