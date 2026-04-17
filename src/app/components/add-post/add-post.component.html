@@ -1,4 +1,97 @@
 <section class="add-post-page">
-  <h2>Add Post</h2>
-  <p>Post creation page is ready for form integration.</p>
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
+          <h2 class="card-title mb-4">Create a New Post</h2>
+
+          @if (errorMessage) {
+            <div class="alert alert-danger" role="alert">{{ errorMessage }}</div>
+          }
+
+          @if (successMessage) {
+            <div class="alert alert-success" role="alert">{{ successMessage }}</div>
+          }
+
+          <form [formGroup]="addPostForm" (ngSubmit)="onSubmit()" autocomplete="off" novalidate>
+            <div class="mb-3">
+              <label for="title" class="form-label">Title</label>
+              <input
+                id="title"
+                type="text"
+                class="form-control"
+                formControlName="title"
+                [class.is-invalid]="title?.invalid && (title?.touched || submitted)"
+                [class.is-valid]="title?.valid && (title?.touched || submitted)"
+              />
+              <div class="invalid-feedback">
+                @if (title?.errors?.['required']) {
+                  <div>Title is required.</div>
+                }
+                @if (title?.errors?.['minlength']) {
+                  <div>Title must be at least 5 characters.</div>
+                }
+                @if (title?.errors?.['maxlength']) {
+                  <div>Title must be at most 150 characters.</div>
+                }
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="category" class="form-label">Category</label>
+              <select
+                id="category"
+                class="form-select"
+                formControlName="categoryId"
+                [disabled]="isLoadingCategories"
+                [class.is-invalid]="categoryId?.invalid && (categoryId?.touched || submitted)"
+                [class.is-valid]="categoryId?.valid && (categoryId?.touched || submitted)"
+              >
+                <option value="" disabled>Select a category</option>
+                @for (category of categories; track category.id) {
+                  <option [value]="category.id">{{ category.name }}</option>
+                }
+              </select>
+              <div class="form-text" *ngIf="isLoadingCategories">Loading categories...</div>
+              <div class="invalid-feedback">
+                @if (categoryId?.errors?.['required']) {
+                  <div>Category is required.</div>
+                }
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="content" class="form-label">Content</label>
+              <textarea
+                id="content"
+                rows="8"
+                class="form-control"
+                formControlName="content"
+                [class.is-invalid]="content?.invalid && (content?.touched || submitted)"
+                [class.is-valid]="content?.valid && (content?.touched || submitted)"
+              ></textarea>
+              <div class="d-flex justify-content-between mt-1">
+                <div class="invalid-feedback d-block" *ngIf="content?.invalid && (content?.touched || submitted)">
+                  @if (content?.errors?.['required']) {
+                    <div>Content is required.</div>
+                  }
+                  @if (content?.errors?.['maxlength']) {
+                    <div>Content must be at most 2500 characters.</div>
+                  }
+                </div>
+                <small class="text-muted ms-auto">{{ content?.value?.length || 0 }}/2500</small>
+              </div>
+            </div>
+
+            <div class="d-flex gap-2">
+              <button type="submit" class="btn btn-success" [disabled]="isSubmitting || isLoadingCategories">
+                {{ isSubmitting ? 'Saving...' : 'Create Post' }}
+              </button>
+              <button type="button" class="btn btn-outline-secondary" [routerLink]="['/']">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>

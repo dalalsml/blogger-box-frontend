@@ -1,0 +1,11 @@
+.add-post-page {
+  padding: 24px 0;
+}
+
+.card-title {
+  font-weight: 700;
+}
+
+textarea.form-control {
+  resize: vertical;
+}
