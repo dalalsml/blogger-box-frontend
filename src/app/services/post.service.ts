@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import { Post } from '../models/post.model';
+import { Post, PostCreateInput, PostPatchInput, PostUpdateInput } from '../models/post.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,12 +20,26 @@ export class PostService {
     return this.http.get<Post>(`${this.baseUrl}/${id}`);
   }
 
-  create(payload: Post): Observable<Post> {
+  searchByValue(value: string): Observable<Post[]> {
+    const params = new HttpParams().set('value', value);
+    return this.http.get<Post[]>(this.baseUrl, { params });
+  }
+
+  filterByDate(date: string): Observable<Post[]> {
+    const params = new HttpParams().set('date', date);
+    return this.http.get<Post[]>(this.baseUrl, { params });
+  }
+
+  create(payload: PostCreateInput): Observable<Post> {
     return this.http.post<Post>(this.baseUrl, payload);
   }
 
-  update(id: string, payload: Post): Observable<Post> {
+  update(id: string, payload: PostUpdateInput): Observable<Post> {
     return this.http.put<Post>(`${this.baseUrl}/${id}`, payload);
+  }
+
+  patch(id: string, payload: PostPatchInput): Observable<Post> {
+    return this.http.patch<Post>(`${this.baseUrl}/${id}`, payload);
   }
 
   delete(id: string): Observable<void> {
