@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
 import { Category } from '../../models/category.model';
 import { PostCreateInput } from '../../models/post.model';
 import { CategoryService } from '../../services/category.service';
@@ -16,13 +18,19 @@ export class AddPostComponent implements OnInit {
   submitted = false;
   isSubmitting = false;
   isLoadingCategories = false;
-  errorMessage = '';
-  successMessage = '';
 
   readonly addPostForm = this.fb.group({
     title: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(150)]],
     categoryId: ['', [Validators.required]],
     content: ['', [Validators.required, Validators.maxLength(2500)]]
+  });
+
+  private readonly toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 2200,
+    timerProgressBar: true
   });
 
   constructor(
@@ -50,11 +58,13 @@ export class AddPostComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
-    this.successMessage = '';
-    this.errorMessage = '';
 
     if (this.addPostForm.invalid) {
       this.addPostForm.markAllAsTouched();
+      this.toast.fire({
+        icon: 'warning',
+        title: 'Please review your post'
+      });
       return;
     }
 
@@ -68,16 +78,24 @@ export class AddPostComponent implements OnInit {
     this.isSubmitting = true;
 
     this.postService.create(payload).subscribe({
-      next: () => {
+      next: async () => {
         this.isSubmitting = false;
-        this.successMessage = 'Post cree avec succes.';
         this.addPostForm.reset({ title: '', categoryId: '', content: '' });
         this.submitted = false;
+
+        await this.toast.fire({
+          icon: 'success',
+          title: 'Post Submitted Successfully'
+        });
+
         this.router.navigate(['/']);
       },
-      error: (error: Error) => {
+      error: (error: HttpErrorResponse) => {
         this.isSubmitting = false;
-        this.errorMessage = error.message || 'Echec de creation du post.';
+        this.toast.fire({
+          icon: 'error',
+          title: this.getErrorMessage(error, 'Post submission failed')
+        });
       }
     });
   }
@@ -89,10 +107,26 @@ export class AddPostComponent implements OnInit {
         this.categories = categories;
         this.isLoadingCategories = false;
       },
-      error: (error: Error) => {
-        this.errorMessage = error.message || 'Impossible de charger les categories.';
+      error: (error: HttpErrorResponse) => {
         this.isLoadingCategories = false;
+        this.toast.fire({
+          icon: 'error',
+          title: this.getErrorMessage(error, 'Unable to load categories')
+        });
       }
     });
+  }
+
+  private getErrorMessage(error: HttpErrorResponse, fallback: string): string {
+    if (typeof error?.error === 'string' && error.error.trim()) {
+      return error.error;
+    }
+    if (error?.error?.message) {
+      return error.error.message;
+    }
+    if (error?.message) {
+      return error.message;
+    }
+    return fallback;
   }
 }

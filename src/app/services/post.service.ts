@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Post, PostCreateInput, PostPatchInput, PostUpdateInput } from '../models/post.model';
+
+type PostsResponse = Post[] | { content?: Post[]; posts?: Post[]; data?: Post[] };
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,10 @@ export class PostService {
   constructor(private http: HttpClient) {}
 
   getAll(): Observable<Post[]> {
-    return this.http.get<Post[]>(this.baseUrl);
+    return this.http.get<PostsResponse>(this.baseUrl).pipe(
+      map((response) => this.normalizePostsResponse(response)),
+      map((posts) => posts.map((post) => this.normalizePost(post)))
+    );
   }
 
   getById(id: string): Observable<Post> {
@@ -44,5 +49,62 @@ export class PostService {
 
   delete(id: string): Observable<void> {
     return this.http.delete<void>(`${this.baseUrl}/${id}`);
+  }
+
+  private normalizePostsResponse(response: PostsResponse): Post[] {
+    if (Array.isArray(response)) {
+      return response;
+    }
+    if (Array.isArray(response?.content)) {
+      return response.content;
+    }
+    if (Array.isArray(response?.posts)) {
+      return response.posts;
+    }
+    if (Array.isArray(response?.data)) {
+      return response.data;
+    }
+    return [];
+  }
+
+  private normalizePost(post: Post): Post {
+    return {
+      ...post,
+      title: this.fixEncoding(post?.title),
+      content: this.fixEncoding(post?.content),
+      createdDate: this.normalizeDate(post?.createdDate),
+      category: post?.category
+        ? {
+            ...post.category,
+            name: this.fixEncoding(post.category.name)
+          }
+        : post?.category
+    };
+  }
+
+  private normalizeDate(value?: string): string | undefined {
+    if (!value) {
+      return value;
+    }
+
+    const matched = value.match(/^(\d{2})-(\d{2})-(\d{4}) (\d{2}):(\d{2}):(\d{2})$/);
+    if (!matched) {
+      return value;
+    }
+
+    const [, day, month, year, hour, minute, second] = matched;
+    return `${year}-${month}-${day}T${hour}:${minute}:${second}`;
+  }
+
+  private fixEncoding(value?: string): string {
+    if (!value || !/[ÃÂâ€™â€œâ€\uFFFD]/.test(value)) {
+      return value || '';
+    }
+
+    try {
+      return decodeURIComponent(escape(value));
+    } catch {
+      return value;
+    }
   }
 }

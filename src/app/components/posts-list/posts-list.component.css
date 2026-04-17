@@ -1,21 +1,56 @@
-.posts-list {
-  display: block;
+.posts-view {
+  width: min(980px, 100%);
+  margin: 0 auto;
+  padding-top: 10px;
 }
 
-.toolbar {
+.posts-panel {
+  border: 1px solid #dfe3ea;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 14px 36px rgba(15, 23, 42, 0.08);
+}
+
+.panel-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  border-bottom: 1px solid #e6e9ef;
+  padding: 18px 24px;
 }
 
-.toolbar h2 {
-  margin: 0;
+.brand {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: #111827;
 }
 
-.list {
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.count {
+  font-size: 0.95rem;
+  color: #4b5563;
+  font-weight: 600;
+}
+
+.panel-body {
+  padding: 18px 20px 20px;
+}
+
+.list-scroll {
+  max-height: min(66vh, 620px);
+  overflow-y: auto;
+  padding-right: 6px;
   display: grid;
   gap: 12px;
+}
+
+.state-text {
+  margin: 8px 0;
 }
 
 .error {
@@ -24,4 +59,12 @@
 
 .empty {
   color: #4b5563;
+}
+
+@media (max-width: 768px) {
+  .panel-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
 }

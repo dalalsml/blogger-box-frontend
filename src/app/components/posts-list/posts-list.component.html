@@ -1,24 +1,31 @@
-<section class="posts-list">
-  <div class="toolbar">
-    <h2>Blog Posts</h2>
-    <button type="button" class="btn btn-primary" (click)="loadPosts()">Recharger</button>
-  </div>
+<section class="posts-view">
+  <article class="posts-panel">
+    <div class="panel-head">
+      <span class="brand">Blogger-Box</span>
+      <div class="actions">
+        <span class="count">{{ postsTotal }} posts</span>
+        <button type="button" class="btn btn-success btn-sm px-3" (click)="loadPosts()">Recharger</button>
+      </div>
+    </div>
 
-  @if (posts$ | async; as posts) {
-    @if (loading) {
-      <p>Chargement...</p>
-    } @else if (error) {
-      <p class="error">{{ error }}</p>
-    } @else {
-      @if (posts.length) {
-        <div class="list">
-          @for (post of posts; track post.id) {
-            <app-post-list-item [post]="post"></app-post-list-item>
+    <div class="panel-body">
+      @if (posts$ | async; as posts) {
+        @if (loading) {
+          <p class="state-text">Chargement...</p>
+        } @else if (error) {
+          <p class="state-text error">{{ error }}</p>
+        } @else {
+          @if (posts.length) {
+            <div class="list-scroll">
+              @for (post of posts; track trackByPostId($index, post)) {
+                <app-post-list-item [post]="post"></app-post-list-item>
+              }
+            </div>
+          } @else {
+            <p class="state-text empty">Aucun post disponible.</p>
           }
-        </div>
-      } @else {
-        <p class="empty">Aucun post disponible.</p>
+        }
       }
-    }
-  }
+    </div>
+  </article>
 </section>
